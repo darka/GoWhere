@@ -31,6 +31,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 public class MainActivity extends FragmentActivity implements
         GooglePlayServicesClient.ConnectionCallbacks,
         GooglePlayServicesClient.OnConnectionFailedListener {
@@ -40,6 +44,7 @@ public class MainActivity extends FragmentActivity implements
     MainLocationListener mLocationListener;
     Location mLocation;
     LocationClient mLocationClient;
+    Yelp mYelp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +65,24 @@ public class MainActivity extends FragmentActivity implements
                         getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mDemoCollectionPagerAdapter);
+        Thread t = new Thread()
+        {
+            public void run()
+            {
+                mYelp = new Yelp(YelpCredentials.CONSUMER_KEY, YelpCredentials.CONSUMER_SECRET,
+                        YelpCredentials.ACCESS_TOKEN, YelpCredentials.ACCESS_TOKEN_SECRET);
+
+                String response = mYelp.search("pubs", mLocation.getLatitude(), mLocation.getLongitude());
+                try {
+                    JSONObject object = (JSONObject) new JSONTokener(response).nextValue();
+                } catch(JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        t.start();
+
     }
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
