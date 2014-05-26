@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 /**
  * Created by Darius on 25/05/2014.
@@ -22,9 +22,11 @@ public class DemoObjectFragment extends Fragment {
         // The last two arguments ensure LayoutParams are inflated
         // properly.
         View rootView = inflater.inflate(
-                R.layout.shark_cat, container, false);
-        //Bundle args = getArguments();
-        //((TextView) rootView.findViewById(android.R.id.shark_cat)).setText(Integer.toString(args.getInt(ARG_OBJECT)));
+                R.layout.slide, container, false);
+        Bundle args = getArguments();
+        int[] cats = { R.drawable.loafcat, R.drawable.sharkcat, R.drawable.grasscat };
+        ((ImageView) rootView.findViewById(R.id.backgroundImage)).setImageDrawable(
+                getResources().getDrawable(cats[(int)(Math.random() * cats.length)]));
         return rootView;
     }
 }
